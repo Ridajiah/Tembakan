@@ -3,8 +3,8 @@ var W;
 var H;
 var SCORE = 0;
 
-W = 1250;
-H = 580;
+W = 1400;
+H = 650;
 
 
 function rand(num) {
