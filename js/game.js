@@ -3,30 +3,21 @@ var W;
 var H;
 var SCORE = 0;
 
-// W = 300;
-// H = 500;
-
 W = 1250;
 H = 580;
 
-/*================================================================ UTIL
-*/
 
 function rand(num) {
   return Math.floor(Math.random() * num)
 };
 
-/*================================================================ LOAD
-*/
-
 Game.Load = function(game) {
 };
 Game.Load.prototype = {
   preload: function() {
-    // bg image
+   
     game.stage.backgroundColor = '#53b289';
 
-    // label
     label = game.add.text(
       W / 2,
       H / 2,
@@ -38,18 +29,16 @@ Game.Load.prototype = {
     );
     label.anchor.setTo(0.5, 0.5);
 
-    // load all assets
-    game.load.image('bg', 'images/julu.png');
+    game.load.image('bg', 'images/cover.png');
     game.load.image('player', 'images/haqqi.png');
     game.load.image('fire', 'images/pin.png');
     game.load.image('bonus', 'images/hadiah.png');
     game.load.image('pixel', 'images/lebur.png');
     game.load.image('bullet', 'images/musuh.png')
     game.load.image('enemy', 'images/Rida.png');
-    game.load.audio('hit', 'sounds/hit.wav');
-    game.load.audio('fire', 'sounds/fire.wav');
-    game.load.audio('exp', 'sounds/exp.wav');
-    game.load.audio('dead', 'sounds/dead.wav');
+    game.load.audio('hit', 'sounds/aw.wav');
+    game.load.audio('fire', 'sounds/klk.wav');
+    game.load.audio('exp', 'sounds/dor.wav');
     game.load.audio('bonus', 'sounds/bonus.wav');
   },
   create: function() {
@@ -57,16 +46,12 @@ Game.Load.prototype = {
   }
 };
 
-/*================================================================ INTRO
-*/
-
 Game.Intro = function(game) {};
 Game.Intro.prototype = {
   create: function() {
-    // bg
+    
     game.add.sprite(0, 0, 'bg');
 
-    // set arrow keys
     this.cursor = game.input.keyboard.createCursorKeys();
   },
   update: function() {
@@ -75,9 +60,6 @@ Game.Intro.prototype = {
     }
   }
 };
-
-/*================================================================ PLAY
-*/
 
 var DEBUG_XPOS;
 var DEBUG_YPOS;
@@ -95,7 +77,7 @@ var M_NUMBER = 80;
 Game.Play = function(game) {};
 Game.Play.prototype = {
   create: function() {
-    // var
+   
     this.fireTime = 0;
     this.bonusTime = 0;
     this.enemyTime = 0;
@@ -105,52 +87,42 @@ Game.Play.prototype = {
     this.playerY = H - 70;
     SCORE = 0;
 
-    // max number of items on screen
     this.maxNEnemy = 30;
     this.maxNFire = 25;
     this.maxNBonus = 3;
     this.maxNBullet = 25;
 
-    // set arrow keys
     this.cursor = game.input.keyboard.createCursorKeys();
 
-    // enemy group
     this.enemies = game.add.group();
     this.enemies.createMultiple(this.maxNEnemy, 'enemy');
     this.enemies.setAll('outOfBoundsKill', true);
 
-    // fire
     this.fires = game.add.group();
     this.fires.createMultiple(this.maxNFire, 'fire');
     this.fires.setAll('outOfBoundsKill', true);
 
-    // bonus
     this.bonuses = game.add.group();
     this.bonuses.createMultiple(this.maxNBonus, 'bonus');
     this.bonuses.setAll('outOfBoundsKill', true);
 
-    // bullet
     this.bullets = game.add.group();
     this.bullets.createMultiple(this.maxNBullet, 'bullet');
     this.bullets.setAll('outOfBoundsKill', true);
 
-    // player
     this.player = game.add.sprite(W / 2, this.playerY, 'player');
     game.physics.arcade.enableBody(this.player);
     this.player.body.collideWorldBounds = true;
 
-    // sound
     this.hitSound = game.add.audio('hit');
     this.fireSound = game.add.audio('fire');
     this.expSound = game.add.audio('exp');
     this.bonusSound = game.add.audio('bonus');
 
-    // emitter
     this.emitter = game.add.emitter(0, 0, 200);
     this.emitter.makeParticles('pixel');
     this.emitter.gravity = 0;
 
-    // live text
     this.livesText = game.add.text(
       W - 25,
       10,
@@ -161,7 +133,6 @@ Game.Play.prototype = {
       }
     );
 
-    // score text
     this.scoreText = game.add.text(
       10,
       10,
@@ -246,7 +217,6 @@ Game.Play.prototype = {
   update: function() {
     this.player.body.velocity.x = 0;
 
-    // move
     if (this.cursor.left.isDown) {
       this.player.body.velocity.x = -350;
 
@@ -254,22 +224,18 @@ Game.Play.prototype = {
       this.player.body.velocity.x = 350;
     }
 
-    // fire
     if (this.cursor.up.isDown) {
       this.fire();
     }
 
-    // summon enemy
     if (this.game.time.now > this.enemyTime) {
       this.summonEnemy();
     }
 
-    // summon bullet
     if (this.game.time.now > this.bulletTime) {
       this.summonBullet();
     }
 
-    // summon bonus
     if (this.game.time.now > this.bonusTime) {
       this.summonBonus(); 
     }
@@ -279,67 +245,55 @@ Game.Play.prototype = {
     this.killBullet();
     this.killBonus();
 
-    // set overlap
     game.physics.arcade.overlap(this.player, this.enemies, this.playerHit, null, this);
     game.physics.arcade.overlap(this.fires, this.enemies, this.enemyHit, null, this);
     game.physics.arcade.overlap(this.player, this.bonuses, this.takeBonus, null, this);
   },
   playerHit: function(player, enemy) {
-    // kill enemy
+
     enemy.kill();
 
-    // play hit sound
     this.hitSound.play('', 0, 0.2);
 
-    // set live
     this.lives -= 1;
     this.livesText.setText(this.lives);
     if (this.lives == 0) {
       this.clear();
       game.state.start('Over');
     }
-    
-    // set bullet
+
     this.evolution = 1;
-    
-    // play player animate (backstep)
+
     game.add.tween(player)
       .to({ y: this.playerY + 20 }, 100, Phaser.Easing.Linear.None)
       .to({ y: this.playerY }, 100, Phaser.Easing.Linear.None).start();
   },
   takeBonus: function(player, bonus) {
-    // kill bonus
+    
     bonus.kill();
 
-    // play sound
     this.bonusSound.play('', 0, 0.1);
-    
-    // set bullet
+
     this.evolution += 1;
 
-    // update score
     this.updateScore(100);
   },
   enemyHit: function(fire, enemy) {
-    // kill bullet
+
     fire.kill();
 
-    // kill enemy
     enemy.kill();
 
-    // play sound
     this.expSound.play('', 0, 0.1);
 
-    // set emiiter position and play
     this.emitter.x = enemy.x + enemy.width / 2;
     this.emitter.y = enemy.y + enemy.height / 2;
     this.emitter.start(true, 300, null, 10);
 
-    // update score
     this.updateScore(10);
   },
   fire: function() {
-    // check fire's delay
+
     if (this.game.time.now > this.fireTime) {
       this.fireTime = game.time.now + 300;
       this.fireSound.play('', 0, 0.1);
@@ -357,7 +311,6 @@ Game.Play.prototype = {
         this.oneFire(this.player.x + this.player.width, this.player.y);
       }
 
-      // animate player
       this.game.add.tween(this.player)
         .to({ y: this.playerY + 5 }, 50, Phaser.Easing.Linear.None)
         .to({ y: this.playerY }, 50, Phaser.Easing.Linear.None).start();
@@ -382,20 +335,16 @@ Game.Play.prototype = {
   }
 };
 
-/*================================================================ OVER
-*/
-
 Game.Over = function(game) {};
 Game.Over.prototype = {
   create: function() {
-    // play sound
+
     game.add.audio('dead').play('', 0, 0.2);
 
-    // set text
     label = game.add.text(
       W / 2,
       H / 2,
-      'MOHON MAAF, SILAHKAN COBA LAGI\n\nscore: ' + SCORE + '\n\nJika Mau Main Lagi Tekan Tanda Panah Atas \n',
+      'MOHON MAAF, SILAHKAN COBA LAGI\n\nSCORE: ' + SCORE + '\n\nJika Mau Main Lagi Tekan Tanda Panah Atas \n',
       {
         font: '30px Arial',
         fill: '#fff',
@@ -404,10 +353,8 @@ Game.Over.prototype = {
     );
     label.anchor.setTo(0.5, 0.5);
 
-    // set delay time
     this.time = this.game.time.now + 800;
 
-    // set arrow keys
     this.cursor = game.input.keyboard.createCursorKeys();
   },
   update: function() {
