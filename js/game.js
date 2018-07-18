@@ -6,8 +6,8 @@ var SCORE = 0;
 // W = 300;
 // H = 500;
 
-W = 800;
-H = 600;
+W = 1250;
+H = 580;
 
 /*================================================================ UTIL
 */
@@ -24,7 +24,7 @@ Game.Load = function(game) {
 Game.Load.prototype = {
   preload: function() {
     // bg image
-    game.stage.backgroundColor = '#2980b9';
+    game.stage.backgroundColor = '#53b289';
 
     // label
     label = game.add.text(
@@ -39,12 +39,13 @@ Game.Load.prototype = {
     label.anchor.setTo(0.5, 0.5);
 
     // load all assets
-    game.load.image('player', 'images/hhii.png');
-    game.load.image('fire', 'images/tembak.png');
+    game.load.image('bg', 'images/julu.png');
+    game.load.image('player', 'images/haqqi.png');
+    game.load.image('fire', 'images/pin.png');
     game.load.image('bonus', 'images/hadiah.png');
     game.load.image('pixel', 'images/lebur.png');
-    game.load.image('bullet', 'images/musuh.png', 16, 32);
-    game.load.image('enemy', 'images/ape.png');
+    game.load.image('bullet', 'images/musuh.png')
+    game.load.image('enemy', 'images/Rida.png');
     game.load.audio('hit', 'sounds/hit.wav');
     game.load.audio('fire', 'sounds/fire.wav');
     game.load.audio('exp', 'sounds/exp.wav');
@@ -83,6 +84,7 @@ var DEBUG_YPOS;
 var DEBUG_Y_STEP = 20;
 var STARTED_DEBUG_XPOS = 8;
 var STARTED_DEBUG_YPOS = 40;
+
 
 function echoDebug(txt, val) {
   game.debug.text(txt + ': ' + val, DEBUG_XPOS, DEBUG_YPOS+=20);
@@ -176,25 +178,14 @@ Game.Play.prototype = {
   updateDebug: function() {
     DEBUG_XPOS = STARTED_DEBUG_XPOS;
     DEBUG_YPOS = STARTED_DEBUG_YPOS;
-
-    echoDebug('Musuh Hidup', this.enemies.countLiving());
-    echoDebug('Musuh Mati', this.enemies.countDead());
-
-    echoDebug('fires living', this.fires.countLiving());
-    echoDebug('fires dead', this.fires.countDead());
-
-    echoDebug('bonuses living', this.bonuses.countLiving());
-    echoDebug('bonuses dead', this.bonuses.countDead());
-
-    echoDebug('bullets living', this.bullets.countLiving());
-    echoDebug('bullets dead', this.bullets.countDead());
+    
   },
   summonEnemy: function() {
     var enemy = this.enemies.getFirstExists(false);
 
     if (enemy) {
       game.physics.arcade.enableBody(enemy);
-      enemy.reset(rand(W / enemy.width - 1) * enemy.width + 7, -enemy.height);
+      enemy.reset(rand(W / enemy.width - 1) * enemy.width + 3, -enemy.height);
       enemy.body.velocity.y = 300;
 
       this.enemyTime = game.time.now + 250;
@@ -212,14 +203,11 @@ Game.Play.prototype = {
 
     if (bullet) {
       game.physics.arcade.enableBody(bullet);
-      bullet.reset(rand(W - bullet.width), -bullet.height);
-      bullet.body.velocity.y = 350;
+      bullet.reset(rand(W - bullet.width-1)*bullet.width +3, -bullet.height);
+      bullet.body.velocity.y = 100;
 
-      bullet.animations.add('move');
-      bullet.animations.play('move', 4, true);
-
-      this.bulletTime = game.time.now + 1000 - SCORE / 2;
-    }
+      this.bulletTime = game.time.now + 250;
+      }
   },
   killBullet: function() {
     this.bullets.forEachAlive(function(bullet) {
@@ -407,7 +395,7 @@ Game.Over.prototype = {
     label = game.add.text(
       W / 2,
       H / 2,
-      'game over\n\nscore: ' + SCORE + '\n\nTekan Tanda Panah Atas\nUntuk Mengulangi',
+      'MOHON MAAF, SILAHKAN COBA LAGI\n\nscore: ' + SCORE + '\n\nJika Mau Main Lagi Tekan Tanda Panah Atas \n',
       {
         font: '30px Arial',
         fill: '#fff',
