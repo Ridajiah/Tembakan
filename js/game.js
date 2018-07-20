@@ -1,12 +1,12 @@
-Game = {};
+Game = {}; 
 var W;
 var H;
 var SCORE = 0;
 
-W = 1400;
-H = 650;
+W = 1250;
+H = 570;
 
-
+ 
 function rand(num) {
   return Math.floor(Math.random() * num)
 };
@@ -16,11 +16,12 @@ Game.Load = function(game) {
 Game.Load.prototype = {
   preload: function() {
    
-    game.stage.backgroundColor = '#53b289';
+    game.stage.backgroundColor = '#90d3e4';
+
 
     label = game.add.text(
-      W / 2,
-      H / 2,
+      W / 5,
+      H / 5,
       'loading...',
       {
         font: '30px Arial',
@@ -29,11 +30,11 @@ Game.Load.prototype = {
     );
     label.anchor.setTo(0.5, 0.5);
 
-    game.load.image('bg', 'images/cover.png');
+    game.load.image('bg', 'images/azmi1.png');
     game.load.image('player', 'images/haqqi.png');
-    game.load.image('fire', 'images/pin.png');
+    game.load.image('fire', 'images/panah.png');
     game.load.image('bonus', 'images/hadiah.png');
-    game.load.image('pixel', 'images/lebur.png');
+    game.load.image('pixel', 'images/hati.png');
     game.load.image('bullet', 'images/musuh.png')
     game.load.image('enemy', 'images/Rida.png');
     game.load.audio('hit', 'sounds/aw.wav');
@@ -51,8 +52,9 @@ Game.Intro.prototype = {
   create: function() {
     
     game.add.sprite(0, 0, 'bg');
-
+    
     this.cursor = game.input.keyboard.createCursorKeys();
+     this.add.image(1250, 550, 'azmi1');
   },
   update: function() {
     if (this.cursor.up.isDown) {
@@ -91,6 +93,7 @@ Game.Play.prototype = {
     this.maxNFire = 25;
     this.maxNBonus = 3;
     this.maxNBullet = 25;
+
 
     this.cursor = game.input.keyboard.createCursorKeys();
 

@@ -4,5 +4,5 @@ Nama kelompok
 2. RIDAJIAH
 
 Example    : Phaser
-Image      : Ridajiah & Risna Windari
+Image      : Ridajiah, Risna Windari & ABDUL HAQQI AZMI
 backsound  : Ridajiah
